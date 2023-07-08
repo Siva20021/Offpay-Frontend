@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SetPinPage extends StatefulWidget {
+  final Function() callback;
+
+  SetPinPage({required this.callback});
+
   @override
   _SetPinPageState createState() => _SetPinPageState();
 }
@@ -26,6 +31,32 @@ class _SetPinPageState extends State<SetPinPage> {
     setState(() {
       pin = '';
     });
+  }
+
+  void submit() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String res = prefs.getString('privateToken')!;
+    if (res == pin) {
+      widget.callback();
+    } else {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Failed'),
+            content: Text('Invalid PIN. Please try again.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
   @override
@@ -154,7 +185,7 @@ class _SetPinPageState extends State<SetPinPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Container(width: 64.0),
+                _buildTickButton(),
                 _buildNumberButton(0),
                 _buildDeleteButton(),
               ],
@@ -202,10 +233,24 @@ class _SetPinPageState extends State<SetPinPage> {
       ),
     );
   }
+
+  Widget _buildTickButton() {
+    return GestureDetector(
+      onTap: submit,
+      child: Container(
+        height: 64.0,
+        width: 64.0,
+        child: Icon(
+          Icons.check,
+          color: Colors.black,
+        ),
+      ),
+    );
+  }
 }
 
-void main() {
-  runApp(MaterialApp(
-    home: SetPinPage(),
-  ));
-}
+// void main() {
+//   runApp(MaterialApp(
+//     home: SetPinPage(),
+//   ));
+// }
