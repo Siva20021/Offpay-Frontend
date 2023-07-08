@@ -82,27 +82,6 @@ class HomeUI extends StatelessWidget {
                     )
                   ),
         Text("SCAN & PAY",style: TextStyle(fontSize: 10,fontWeight: FontWeight.bold))]),
-        // Column(
-        //   children: [Container(
-        //             margin: EdgeInsets.all(20),
-        //             padding: EdgeInsets.all(10),
-        //             decoration: BoxDecoration(
-        //                 borderRadius: BorderRadius.circular(100),
-        //                 border: Border.all(width: 2, color: Colors.redAccent)),
-        //             child:
-        //             InkWell(
-        //               child: const Icon(
-        //                 CarbonIcons.send,
-        //                 color: Colors.red,
-        //                 size: 32.0,
-        //               ),
-        //               onTap:(){Navigator.push(
-        //                 context,
-        //                 MaterialPageRoute(builder: (context) =>Smsset(text: null)),
-        //               );},
-        //             ),
-        //           ),Text("SENDER",style: TextStyle(fontSize: 10,fontWeight: FontWeight.bold))]),
-
         Column(
           children: [ Container(
                       margin: EdgeInsets.all(20),
