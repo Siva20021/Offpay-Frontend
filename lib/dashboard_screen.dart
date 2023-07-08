@@ -27,25 +27,8 @@ class DashboardScreenState extends State<DashboardScreen>{
         title: "OFFPAY",
         home:Scaffold(
           resizeToAvoidBottomInset: false,
-          body:SlideDrawer(
+          body:Container(
             child: const HomeUI(),
-            items: [
-              MenuItem('Home', icon: Icons.home, onTap: (){}),
-              MenuItem('Project',icon:Icons.rss_feed, onTap: (){}),
-              MenuItem('Favourite',icon: Icons.favorite_border, onTap: (){}),
-              MenuItem('Profile',icon: Icons.person_outline, onTap: (){}),
-              MenuItem('Setting',icon: Icons.settings, onTap: (){}),
-            ],
-            brightness: Brightness.dark,
-            backgroundGradient: const LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              stops: [0.0, 1.0],
-              colors: [
-                Color(0xFF000046),
-                Color(0xFF1CB5E0),
-              ],
-            ),
           ),appBar: AppBar(
           elevation: 0.0,
           backgroundColor: const Color(0xFF000046),
