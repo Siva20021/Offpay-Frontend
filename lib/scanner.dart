@@ -116,6 +116,7 @@ class _QRViewExampleState extends State<QRViewExample> {
   void _onQRViewCreated(QRViewController controller) {
     this.controller = controller;
     controller.scannedDataStream.listen((scanData) {
+      print(scanData);
       setState(() {
         result = scanData;
       });
