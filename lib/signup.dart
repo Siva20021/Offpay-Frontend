@@ -1,4 +1,7 @@
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
+import 'package:offpay/HomePageUI.dart';
 import 'login.dart';
 import 'package:lottie/lottie.dart';
 import 'package:http/http.dart' as http;
@@ -20,18 +23,38 @@ class SignupPage extends State<MySignUp> {
   TextEditingController passController = TextEditingController();
   TextEditingController pinController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
 
   void Signup() async {
     var url = Uri.parse('https://offpay-production.up.railway.app/register');
-    var response = await http.post(url, body: {
+    print({
       "name": nameController.text,
-      "address": passController.text,
       "phone": phoneController.text,
       "email": emailController.text,
       "password": passController.text,
+      "pin" : pinController.text
+    });
+    var response = await http.post(url, body: {
+      "name": nameController.text,
+      "phone": phoneController.text,
+      "email": emailController.text,
+      "password": passController.text,
+      "pin" : pinController.text
     });
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');
+    var res = jsonDecode(response.body);
+    print(res["publicId"]);
+    //Save to prefs
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('publicId', res["publicId"]);
+    prefs.setString('email', emailController.text);
+    prefs.setString('name', nameController.text);
+    prefs.setString('phone', phoneController.text);
+    prefs.setString('privateToken', pinController.text);
+    prefs.setInt('balance', 0);
+
+
     StatusCode = response.statusCode;
     BodyMsg = response.body;
     // Navigator.of(context).pushReplacement(MaterialPageRoute(
@@ -49,7 +72,7 @@ class SignupPage extends State<MySignUp> {
       ).show();
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => MyLogin()),
+        MaterialPageRoute(builder: (context) => HomeUI()),
       );
     } else {
       AwesomeDialog(
