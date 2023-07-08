@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:offpay/HomePageUI.dart';
 
 class Success extends StatelessWidget {
   const Success({Key? key}) : super(key: key);
@@ -16,10 +17,20 @@ class Success extends StatelessWidget {
             elevation: 0,
             brightness: Brightness.light,
             backgroundColor: Colors.white,
-            leading:
-            IconButton( onPressed: (){
-              Navigator.pop(context);
-            },icon:const Icon(Icons.arrow_back_ios,size: 20,color: Colors.black,)),
+            leading: IconButton(
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => (HomeUI())),
+                  );
+                },
+                icon: const Icon(
+                  Icons.arrow_back_ios,
+                  size: 20,
+                  color: Colors.black,
+                )),
           ),
-        body:Center(child:Lottie.asset("assets/images/payment.json"))),
-  );}}
+          body: Center(child: Lottie.asset("assets/images/payment.json"))),
+    );
+  }
+}
