@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:random_avatar/random_avatar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'main.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:path_provider/path_provider.dart';
@@ -12,7 +14,10 @@ import 'package:share_plus/share_plus.dart';
 var code;
 
 class MyQrcode extends StatefulWidget {
-  const MyQrcode({Key? key}) : super(key: key);
+  const MyQrcode({
+
+    Key? key
+  }) : super(key: key);
 
   @override
   Qrcode createState() {
@@ -23,7 +28,35 @@ class MyQrcode extends StatefulWidget {
 class Qrcode extends State<MyQrcode> {
   Uint8List? _imagefile;
 
+  late String phone = "";
+  late String publicId = "";
+  late String name = "";
+
+
+
+
+  @override
+  void initState() {
+   super.initState();
+   print("Started Here");
+   getSharedPrefs();
+   print("$phone $publicId $name");
+  }
+
+  void getSharedPrefs() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      phone = prefs.getString('phone')!;
+      publicId = prefs.getString('publicId')!;
+      name = prefs.getString('name')!;
+    });
+  }
+
+
   void ScreenShot() async{
+
+
+
     await screenshotController.capture(delay: const Duration(milliseconds: 10)).then((image) async {
       if (image != null) {
         setState(() {
@@ -46,6 +79,12 @@ class Qrcode extends State<MyQrcode> {
   ScreenshotController screenshotController = ScreenshotController();
 
   Widget build(BuildContext context) {
+    Map<String,dynamic>jsonData={
+      'phone':phone,
+      'publicId':publicId,
+      'name':name
+    };
+    String jsonString=jsonEncode(jsonData);
     return MaterialApp(
         title: "OFFPAY",
         theme: ThemeData(
@@ -76,7 +115,7 @@ class Qrcode extends State<MyQrcode> {
             QrImage(
               backgroundColor: Colors.grey,
                 foregroundColor: Colors.black,
-              data: '123456', //User Id
+              data: jsonString, //User Id
               version: QrVersions.auto,
               size: 250.0,
               ),SizedBox(height: 15.0,),TextButton(
@@ -88,7 +127,7 @@ class Qrcode extends State<MyQrcode> {
                   onPressed: () {
                   ScreenShot();
                   },
-                  child: const Text("Share QR")
+                  child: Text("$phone $name $publicId")
               )],
           ))),
         )
