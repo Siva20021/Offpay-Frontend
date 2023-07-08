@@ -5,9 +5,12 @@ import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Smsset extends StatefulWidget {
-  final Barcode? text;
+  final String phone;
+  final String publicId;
+  final String name;
 
-  const Smsset({Key? key, required this.text}) : super(key: key);
+  const Smsset({Key? key, required this.phone,required this.publicId ,required this.name}) : super(key: key);
+
 
   @override
   SendSmsState createState() {
@@ -17,6 +20,7 @@ class Smsset extends StatefulWidget {
 
 class Success extends StatelessWidget {
   const Success({Key? key}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +42,14 @@ class SendSmsState extends State<Smsset> {
   TextEditingController recvController = TextEditingController();
   TextEditingController descController = TextEditingController();
   TextEditingController pinController = TextEditingController();
+
+
+  @override
+  void initState(){
+    super.initState();
+    print(widget.publicId);
+    print(widget.name);
+  }
 
   String recipients = "+91 7978069951";
 

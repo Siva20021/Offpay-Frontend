@@ -32,45 +32,49 @@ class MyCustomFormState extends State<MyLogin> {
     var url =
         Uri.parse('https://offpay-production.up.railway.app/loginWithEmail');
     var response = await http.post(url, body: {
-      "loginEmail": emailController.text,
-      "loginPass": passController.text
+      "email": emailController.text,
+      "password": passController.text
     });
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');
     StatusCode = response.statusCode;
     BodyMsg = response.body;
-    Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (BuildContext context) => HomeUI()));
-    // if (StatusCode != 200) {
-    //   AwesomeDialog(
-    //     context: context,
-    //     dialogType: DialogType.SUCCES,
-    //     animType: AnimType.SCALE,
-    //     title: 'Successfully Login',
-    //     btnOkText: 'Confirm',
-    //     btnOkIcon: Icons.verified,
-    //     dismissOnTouchOutside: false,
-    //     btnOkOnPress: () async {
-    //       SharedPreferences prefs = await SharedPreferences.getInstance();
-    //       prefs.setString('email', emailController.text);
-    //       //Navigator.of(context).pop(); //to be used later after completion
-
-    //     },
-    //   ).show();
-    // } else {
-    //   AwesomeDialog(
-    //     context: context,
-    //     dialogType: DialogType.ERROR,
-    //     animType: AnimType.SCALE,
-    //     title: '$BodyMsg',
-    //     btnOkText: 'Try Again',
-    //     btnOkIcon: Icons.arrow_back_ios,
-    //     dismissOnTouchOutside: false,
-    //     btnOkOnPress: () {
-    //       return null;
-    //     },
-    //   ).show();
-    // }
+    if (StatusCode == 200) {
+      var result = jsonDecode(response.body);
+      AwesomeDialog(
+        context: context,
+        dialogType: DialogType.SUCCES,
+        animType: AnimType.SCALE,
+        title: 'Successfully Login',
+        btnOkText: 'Confirm',
+        btnOkIcon: Icons.verified,
+        dismissOnTouchOutside: false,
+        btnOkOnPress: () async {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          prefs.setString('publicId', result["result"]["publicId"]);
+          prefs.setString('email', result["result"]["email"]);
+          prefs.setString('name', result["result"]["name"]);
+          prefs.setString('phone', result["result"]["phone"]);
+          prefs.setString('privateToken', result["result"]["privateToken"]);
+          prefs.setInt('balance', result["result"]["balance"]);
+          Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (BuildContext context) => HomeUI()));
+        },
+      ).show();
+    } else {
+      AwesomeDialog(
+        context: context,
+        dialogType: DialogType.ERROR,
+        animType: AnimType.SCALE,
+        title: '$BodyMsg',
+        btnOkText: 'Try Again',
+        btnOkIcon: Icons.arrow_back_ios,
+        dismissOnTouchOutside: false,
+        btnOkOnPress: () {
+          return null;
+        },
+      ).show();
+    }
   }
 
   @override

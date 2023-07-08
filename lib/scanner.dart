@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
@@ -19,24 +20,6 @@ class _QRViewExampleState extends State<QRViewExample> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   Barcode? result;
   QRViewController? controller;
-  void Confirm(Barcode? result){
-    AwesomeDialog(
-      context: context,
-      dialogType: DialogType.SUCCES,
-      animType: AnimType.SCALE,
-      //title: '${result!.code}',
-      btnOkText:'Next >>',
-      btnOkIcon:Icons.verified,
-      dismissOnTouchOutside:true,
-      btnOkOnPress: () {
-       // Navigator.pop(context);
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => ( Smsset(text: result))),
-        );
-      },
-    ).show();
-  }
 
   // In order to get hot reload to work we need to pause the camera if the platform
   // is android, or resume the camera if the platform is iOS.
@@ -87,27 +70,6 @@ class _QRViewExampleState extends State<QRViewExample> {
               onQRViewCreated: _onQRViewCreated,
             ),
           ),
-          Expanded(
-            flex: 1,
-            child: Center(
-              child: (result != null)
-                ? MaterialButton(
-                minWidth: double.infinity,
-                height:60,
-                onPressed: () {
-                    Confirm(result);
-                },
-                color: Colors.indigoAccent[400],
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(40)
-                ),
-                child: const Text("Continue",style: TextStyle(
-                    fontWeight: FontWeight.w600,fontSize: 16,color: Colors.white70
-                ),),
-              )
-                  :(Text('Scan a code')),
-            ),
-          )
         ],
       ),
     ));
@@ -116,10 +78,20 @@ class _QRViewExampleState extends State<QRViewExample> {
   void _onQRViewCreated(QRViewController controller) {
     this.controller = controller;
     controller.scannedDataStream.listen((scanData) {
-      print(scanData);
-      setState(() {
-        result = scanData;
-      });
+      print(scanData.code);
+      try{
+        var res = jsonDecode(scanData.code!);
+        if(res["phone"]!="" && res["publicId"]!="" && res["name"]!=""){
+          print("True");
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => ( Smsset(phone:res["phone"],publicId:res["publicId"],name:res["name"]))),
+          );
+        }
+      } catch(err){
+        print(err);
+      }
+
     });
   }
 
