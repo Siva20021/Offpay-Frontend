@@ -2,6 +2,7 @@ import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class Cart extends StatefulWidget {
   @override
@@ -30,7 +31,7 @@ class _CartState extends State<Cart> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var options = {
       'key': 'rzp_test_Winb5v7jIudsVb',
-      'amount': int.parse(amtController.text),
+      'amount': int.parse(amtController.text)*100,
       'name': prefs.getString('name'),
       'description': 'Adding Money to OffPay Wallet',
       'prefill': {'contact': '8888888888', 'email': 'test@razorpay.com'},
@@ -46,9 +47,25 @@ class _CartState extends State<Cart> {
     }
   }
 
-  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+  void _handlePaymentSuccess(PaymentSuccessResponse response) async{
     Fluttertoast.showToast(
         msg: "SUCCESS: " + response.paymentId.toString(), timeInSecForIosWeb: 4);
+
+    var url = "https://offpay-production.up.railway.app/users/addBalance";
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    var re = await http.post(Uri.parse(url), body: {
+      "publicId": prefs.getString('publicId'),
+      "amount": amtController.text
+    });
+
+    print(re.body);
+
+    if(re.statusCode == 200){
+      int currBalance = prefs.getInt('balance')!;
+      currBalance += int.parse(amtController.text);
+      prefs.setInt('balance', currBalance);
+    }
   }
 
   void _handlePaymentError(PaymentFailureResponse response) {

@@ -55,10 +55,9 @@ class SendSmsState extends State<Smsset> {
     print(response.statusCode);
     if (response.statusCode == 200) {
 
-      String currBalance = prefs.getString('balance')!;
-      int curr = int.parse(currBalance);
-      curr -= int.parse(amtController.text);
-      prefs.setString('balance', curr.toString());
+      int currBalance = prefs.getInt('balance')!;
+      currBalance += int.parse(amtController.text);
+      prefs.setInt('balance', currBalance);
 
       Navigator.push(
         context,
