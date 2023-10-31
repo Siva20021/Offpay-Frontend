@@ -26,7 +26,7 @@ class SignupPage extends State<MySignUp> {
   TextEditingController addressController = TextEditingController();
 
   void Signup() async {
-    var url = Uri.parse('https://offpay-production.up.railway.app/register');
+    var url = Uri.parse('https://offpaybackend-production.up.railway.app/register');
     print({
       "name": nameController.text,
       "phone": phoneController.text,
@@ -247,11 +247,11 @@ class SignupPage extends State<MySignUp> {
                                               child: TextFormField(
                                                 keyboardType:
                                                     TextInputType.number,
-                                                maxLength: 4,
+                                                maxLength: 6,
                                                 onFieldSubmitted: (value) {},
                                                 validator: (value) {
                                                   if (value == null ||
-                                                      value.isEmpty) {
+                                                      value.isEmpty || value.length<6) {
                                                     return 'Enter a valid pincode';
                                                   }
                                                   return null;

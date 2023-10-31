@@ -51,7 +51,7 @@ class _CartState extends State<Cart> {
     Fluttertoast.showToast(
         msg: "SUCCESS: " + response.paymentId.toString(), timeInSecForIosWeb: 4);
 
-    var url = "https://offpay-production.up.railway.app/users/addBalance";
+    var url = "https://offpaybackend-production.up.railway.app/users/addBalance";
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     var re = await http.post(Uri.parse(url), body: {

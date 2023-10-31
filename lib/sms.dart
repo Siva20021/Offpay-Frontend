@@ -44,7 +44,7 @@ class SendSmsState extends State<Smsset> {
 
   void transaction() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    var url = "https://offpay-production.up.railway.app/users/transaction";
+    var url = "https://offpaybackend-production.up.railway.app/users/transaction";
 
     var response = await http.post(Uri.parse(url), body: {
       "From": prefs.getString('publicId'),
